@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ru.mentorbank.backoffice.model.stoplist.JuridicalStopListRequest;
+import ru.mentorbank.backoffice.model.stoplist.PhysicalStopListRequest;
 import ru.mentorbank.backoffice.model.stoplist.StopListInfo;
 import ru.mentorbank.backoffice.model.stoplist.StopListStatus;
 import ru.mentorbank.backoffice.test.AbstractSpringTest;
@@ -16,20 +17,23 @@ public class StopListServiceStubTest extends AbstractSpringTest {
 
 	@Autowired
 	private StopListServiceStub stopListService;
-	private JuridicalStopListRequest stopListRequest;
+	private JuridicalStopListRequest juridicalStopListRequest;
+	private PhysicalStopListRequest physicalStopListRequest;
+	
 
 	@Before
 	public void setUp() {
-		stopListRequest = new JuridicalStopListRequest();
+		juridicalStopListRequest = new JuridicalStopListRequest();
+		physicalStopListRequest = new PhysicalStopListRequest();
 	}
 
 	@Test
 	public void getJuridicalStopListInfo_OK() {
 		// setup SUT
-		stopListRequest.setInn(StopListServiceStub.INN_FOR_OK_STATUS);
+		juridicalStopListRequest.setInn(StopListServiceStub.INN_FOR_OK_STATUS);
 		// Call SUT
 		StopListInfo info = stopListService
-				.getJuridicalStopListInfo(stopListRequest);
+				.getJuridicalStopListInfo(juridicalStopListRequest);
 		// Validate SUT
 		assertNotNull("Информация должна быть заполнена", info);
 		assertEquals(StopListStatus.OK, info.getStatus());
@@ -37,11 +41,31 @@ public class StopListServiceStubTest extends AbstractSpringTest {
 
 	@Test
 	public void getJuridicalStopListInfo_STOP() {
-		stopListRequest.setInn(StopListServiceStub.INN_FOR_STOP_STATUS);
+		juridicalStopListRequest.setInn(StopListServiceStub.INN_FOR_STOP_STATUS);
 		StopListInfo info = stopListService
-				.getJuridicalStopListInfo(stopListRequest);
+				.getJuridicalStopListInfo(juridicalStopListRequest);
 		assertNotNull("Информация должна быть заполнена", info);
 		assertEquals(StopListStatus.STOP, info.getStatus());
 	}
+	
+	@Test
+	public void getPhysicalStopListInfo_OK() {
+		// setup SUT
+		physicalStopListRequest.setDocumentNumber(StopListServiceStub.DOCUMENT_NUMBER_FOR_OK_STATUS);
+		// Call SUT
+		StopListInfo info = stopListService
+				.getPhysicalStopListInfo(physicalStopListRequest);
+		// Validate SUT
+		assertNotNull("Информация должна быть заполнена", info);
+		assertEquals(StopListStatus.OK, info.getStatus());
+	}
 
+	@Test
+	public void getPhysicalStopListInfo_STOP() {
+		physicalStopListRequest.setDocumentNumber(StopListServiceStub.DOCUMENT_NUMBER_FOR_STOP_STATUS);
+		StopListInfo info = stopListService
+				.getPhysicalStopListInfo(physicalStopListRequest);
+		assertNotNull("Информация должна быть заполнена", info);
+		assertEquals(StopListStatus.STOP, info.getStatus());
+	}
 }
