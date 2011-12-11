@@ -1,6 +1,9 @@
 package ru.mentorbank.backoffice.services.moneytransfer;
 
 import ru.mentorbank.backoffice.dao.OperationDao;
+import ru.mentorbank.backoffice.dao.exception.OperationDaoException;
+import ru.mentorbank.backoffice.model.Account;
+import ru.mentorbank.backoffice.model.Operation;
 import ru.mentorbank.backoffice.model.stoplist.JuridicalStopListRequest;
 import ru.mentorbank.backoffice.model.stoplist.PhysicalStopListRequest;
 import ru.mentorbank.backoffice.model.stoplist.StopListInfo;
@@ -64,9 +67,23 @@ public class MoneyTransferServiceBean implements MoneyTransferService {
 			dstStopListInfo = getStopListInfo(request.getDstAccount());
 		}
 
-		private void saveOperation() {
-			// TODO: Необходимо сделать вызов операции saveOperation и сделать
+		private void saveOperation() throws TransferException {
+			// TODO: (done) Необходимо сделать вызов операции saveOperation и сделать
 			// соответствующий тест вызова операции operationDao.saveOperation()
+			Account srcAccount = new Account();
+			Account dstAccount = new Account();
+			Operation operation = new Operation();
+
+			srcAccount.setAccountNumber(request.getSrcAccount().getAccountNumber());
+			dstAccount.setAccountNumber(request.getDstAccount().getAccountNumber());
+			operation.setSrcAccount(srcAccount);
+			operation.setDstAccount(dstAccount);
+
+			try {
+				operationDao.saveOperation(operation);
+			} catch (OperationDaoException e) {
+				throw new TransferException("Error in saving operation");
+			}
 		}
 
 		private void transferDo() throws TransferException {
