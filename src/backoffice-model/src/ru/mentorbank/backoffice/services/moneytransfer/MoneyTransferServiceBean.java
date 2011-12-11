@@ -2,6 +2,7 @@ package ru.mentorbank.backoffice.services.moneytransfer;
 
 import ru.mentorbank.backoffice.dao.OperationDao;
 import ru.mentorbank.backoffice.model.stoplist.JuridicalStopListRequest;
+import ru.mentorbank.backoffice.model.stoplist.PhysicalStopListRequest;
 import ru.mentorbank.backoffice.model.stoplist.StopListInfo;
 import ru.mentorbank.backoffice.model.stoplist.StopListStatus;
 import ru.mentorbank.backoffice.model.transfer.AccountInfo;
@@ -90,7 +91,16 @@ public class MoneyTransferServiceBean implements MoneyTransferService {
 						.getJuridicalStopListInfo(request);
 				return stopListInfo;
 			} else if (accountInfo instanceof PhysicalAccountInfo) {
-				// TODO: Сделать вызов stopListService для физических лиц
+				// TODO: (done) Сделать вызов stopListService для физических лиц
+				PhysicalAccountInfo physicalAccountInfo = (PhysicalAccountInfo) accountInfo;
+				PhysicalStopListRequest request = new PhysicalStopListRequest();
+				request.setDocumentSeries(physicalAccountInfo.getDocumentSeries());
+				request.setDocumentNumber(physicalAccountInfo.getDocumentNumber());
+				request.setFirstname(physicalAccountInfo.getFirstname());
+				request.setLastname(physicalAccountInfo.getLastname());
+				request.setMiddlename(physicalAccountInfo.getMiddlename());
+				StopListInfo stopListInfo = stopListService.getPhysicalStopListInfo(request);
+				return stopListInfo;
 			}
 			return null;
 		}
